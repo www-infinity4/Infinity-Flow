@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinity-Flow – Trackable Physical-Digital Coin Toolkit</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --dark: #0d0d0d;
+      --surface: #141414;
+      --card: #1c1c1c;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #888;
+      --accent: #4fc3f7;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+      border-bottom: 1px solid var(--gold);
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--gold);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    header .actions {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-gold { background: var(--gold); color: #000; }
+    .btn-outline { border: 1px solid var(--gold); color: var(--gold); background: transparent; }
+
+    /* ── Layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    section { margin-bottom: 4rem; }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Concept table / cards ── */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .concept-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .concept-card .layer-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+
+    .concept-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── Coins table ── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 0.6rem 0.9rem;
+      color: var(--gold);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 0.6rem 0.9rem;
+      color: var(--text);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .tier-common    { background: #2a2a2a; color: #aaa; }
+    .tier-uncommon  { background: #1a2a1a; color: #6dbf6d; }
+    .tier-rare      { background: #1a1a2a; color: #7ca8f0; }
+    .tier-exotic    { background: #2a1a2a; color: #c97cf4; }
+
+    .pulse-yes { color: #6dbf6d; font-weight: 700; }
+    .pulse-no  { color: var(--muted); }
+
+    /* ── CLI / code blocks ── */
+    .code-block {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #d0d0d0;
+    }
+
+    .code-block pre .comment { color: #555; }
+    .code-block pre .cmd     { color: var(--gold-light); }
+    .code-block pre .flag    { color: var(--accent); }
+    .code-block pre .str     { color: #8bc34a; }
+
+    /* ── Layout grid ── */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .layout-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    .layout-item code {
+      display: block;
+      font-family: 'Cascadia Code', monospace;
+      color: var(--gold-light);
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .layout-item p { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── Safety note ── */
+    .safety {
+      background: #1a0e0e;
+      border: 1px solid #5a1a1a;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: #d97777;
+    }
+
+    .safety strong { color: #f08080; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Infinity-Flow v0.1.0</div>
+  <h1>Infinity-Flow</h1>
+  <p>Trackable physical-digital coin toolkit – collectible coins that combine a physical metal shell with a nanosized nuclear core, leaf shielding, and cryptographic provenance.</p>
+  <div class="actions">
+    <a class="btn btn-gold" href="https://github.com/www-infinity4/Infinity-Flow">View on GitHub</a>
+    <a class="btn btn-outline" href="#installation">Get Started</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Concept -->
+  <section id="concept">
+    <h2>Concept</h2>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="layer-name">Shell</div>
+        <h3>Metal Composition</h3>
+        <p>Chosen metal (gold, silver, platinum…). Signal properties derived from material physics.</p>
+      </div>
+      <div class="concept-card">
+        <div class="layer-name">Core</div>
+        <h3>Nuclear Fingerprint</h3>
+        <p>Nanosized radionuclide (Ra-223/224) in an encapsulated carrier. SHA-256 fingerprint → unique tamper-proof ID.</p>
+      </div>
+      <div class="concept-card">
+        <div class="layer-name">Shield</div>
+        <h3>Leaf Containment</h3>
+        <p>Gold-leaf or graphene-gold composite at ~100 nm. Containment by default; configurable pulse window.</p>
+      </div>
+      <div class="concept-card">
+        <div class="layer-name">Provenance</div>
+        <h3>Cryptographic Chain</h3>
+        <p>Serial number stamped on coin. Immutable chain of minted / transferred / authenticated events.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coins -->
+  <section id="coins">
+    <h2>Starter Set – 10 Coins</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metal</th>
+            <th>Tier</th>
+            <th>Signal Type</th>
+            <th>Pulse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gold</td>
+            <td><span class="tier-badge tier-rare">Rare</span></td>
+            <td>Plasmonic EM pulse</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Silver</td>
+            <td><span class="tier-badge tier-uncommon">Uncommon</span></td>
+            <td>Antimicrobial ion release</td>
+            <td><span class="pulse-no">—</span></td>
+          </tr>
+          <tr>
+            <td>Copper</td>
+            <td><span class="tier-badge tier-common">Common</span></td>
+            <td>Resistive change</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Nickel</td>
+            <td><span class="tier-badge tier-common">Common</span></td>
+            <td>Resistive change</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Platinum</td>
+            <td><span class="tier-badge tier-rare">Rare</span></td>
+            <td>Catalytic chemical</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Palladium</td>
+            <td><span class="tier-badge tier-rare">Rare</span></td>
+            <td>Catalytic chemical</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Bismuth</td>
+            <td><span class="tier-badge tier-uncommon">Uncommon</span></td>
+            <td>Passive shielding</td>
+            <td><span class="pulse-no">—</span></td>
+          </tr>
+          <tr>
+            <td>Iridium</td>
+            <td><span class="tier-badge tier-exotic">Exotic</span></td>
+            <td>Electrochemical catalytic</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Ruthenium</td>
+            <td><span class="tier-badge tier-exotic">Exotic</span></td>
+            <td>Electrochemical catalytic</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Carbon Hybrid</td>
+            <td><span class="tier-badge tier-rare">Rare</span></td>
+            <td>Frequency-shift computing</td>
+            <td><span class="pulse-yes">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Installation -->
+  <section id="installation">
+    <h2>Installation</h2>
+    <div class="code-block">
+      <pre><span class="comment"># Clone and install in editable mode</span>
+<span class="cmd">git clone</span> https://github.com/www-infinity4/Infinity-Flow.git
+<span class="cmd">cd</span> Infinity-Flow
+<span class="cmd">pip install</span> <span class="flag">-e</span> .</pre>
+    </div>
+  </section>
+
+  <!-- CLI -->
+  <section id="cli">
+    <h2>CLI Usage</h2>
+    <div class="code-block">
+      <pre><span class="comment"># List all coins in the default set</span>
+<span class="cmd">infinity-flow list</span>
+
+<span class="comment"># Filter by collectible tier</span>
+<span class="cmd">infinity-flow list</span> <span class="flag">--tier</span> <span class="str">exotic</span>
+
+<span class="comment"># Inspect a single coin (JSON output)</span>
+<span class="cmd">infinity-flow show</span> <span class="str">gold</span>
+
+<span class="comment"># Mint a full set and dump JSON</span>
+<span class="cmd">infinity-flow mint</span> <span class="flag">--minted-by</span> <span class="str">"My-Mint"</span>
+
+<span class="comment"># Verify the digital integrity of every coin</span>
+<span class="cmd">infinity-flow verify</span>
+
+<span class="comment"># Simulate a signal pulse</span>
+<span class="cmd">infinity-flow pulse</span> <span class="str">gold</span>
+<span class="cmd">infinity-flow pulse</span> <span class="str">carbon_hybrid</span></pre>
+    </div>
+  </section>
+
+  <!-- Project Layout -->
+  <section id="layout">
+    <h2>Project Layout</h2>
+    <div class="layout-grid">
+      <div class="layout-item">
+        <code>cli.py</code>
+        <p>Click CLI entry-point</p>
+      </div>
+      <div class="layout-item">
+        <code>coin/models.py</code>
+        <p>Coin, NuclearCore, ShieldConfig, ProvenanceEvent</p>
+      </div>
+      <div class="layout-item">
+        <code>coin/apothecary.py</code>
+        <p>ApothecarySet factory – full 10-coin starter set</p>
+      </div>
+      <div class="layout-item">
+        <code>coin/tracker.py</code>
+        <p>CoinTracker – in-memory provenance ledger</p>
+      </div>
+      <div class="layout-item">
+        <code>coin/signal.py</code>
+        <p>SignalEmitter – physics-based signal simulation</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Safety -->
+  <section id="safety">
+    <div class="safety">
+      <strong>Safety note:</strong> This repository is a <strong>software simulation</strong> of the Infinity-Flow coin concept. Any real-world work involving radioactive materials (Ra-223, Ra-224, etc.) must be conducted in compliance with all applicable national and international regulations governing radioactive substances.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2025 Infinity-Flow · <a href="https://github.com/www-infinity4/Infinity-Flow" style="color:var(--gold)">GitHub</a>
+</footer>
+
+</body>
+</html>
